@@ -15,7 +15,7 @@ const httpLink = createHttpLink({
   uri: 'http://localhost:8081/graphql',
 });
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, { headers }) => {  /* eslint-disable */
   // get the authentication token from local storage if it exists
   const token = localStorage.getItem('token');
   const refreshToken = localStorage.getItem('refreshToken');
