@@ -8,7 +8,6 @@ const isAuthenticated = () => {
   try {
     decode(token);
     decode(refreshToken);
-    console.log('authenticaated§');
     return true;
   } catch (e) {
     return false;

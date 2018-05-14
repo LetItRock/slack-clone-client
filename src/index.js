@@ -50,7 +50,8 @@ const tokenAfterwareLink = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   link: tokenAfterwareLink.concat(authLink.concat(httpLink)),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  connectToDevTools: true,
 });
 
 const App = (
