@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Header, Modal, Input } from 'semantic-ui-react';
+import { Form, Button, Modal, Input } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
