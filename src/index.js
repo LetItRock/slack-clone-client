@@ -30,22 +30,16 @@ const authLink = setContext((_, { headers }) => {  /* eslint-disable */
 });
 
 const tokenAfterwareLink = new ApolloLink((operation, forward) => {
-  return forward(operation).map(response => {
-    const context = operation.getContext();
-    const { response: { headers } } = context;
-
-    if (headers) {
-      const token = headers.get('x-token');
-      const refreshToken = headers.get('x-refresh-token');
-
-      if (token) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', refreshToken);
-      }
-
+  const { headers } = operation.getContext();
+  if (headers) {
+    const token = headers.get('x-token');
+    const refreshToken = headers.get('x-refresh-token');
+    if (token) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
     }
-    return response;
-  });
+  }
+  return forward(operation);
 });
 
 const client = new ApolloClient({
