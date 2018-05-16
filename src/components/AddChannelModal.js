@@ -67,7 +67,7 @@ export default compose(
             channel: {
               __typename: 'Channel',
               id: -1,
-              name: values.name,
+              name: name,
             }
           },
         },

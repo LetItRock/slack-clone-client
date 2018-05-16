@@ -63,7 +63,7 @@ export default ({ teamId, teamName, username, channels, users, onAddChannelClick
         <SideBarListHeader>
           Channels <Icon name="add circle" onClick={onAddChannelClick} style={{ cursor: 'pointer' }} />
         </SideBarListHeader>
-        {channels.map(channel => channel(channel, teamId))}
+        {channels.map(c => channel(c, teamId))}
       </SideBarList>
     </div>
     <div>
