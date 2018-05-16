@@ -13,8 +13,7 @@ const teamAndLetterName = team => ({ id: team.id, letter: team.name.charAt(0).to
 
 const ViewTeam = ({ data: { loading, allTeams, inviteTeams }, match: { params: { teamId, channelId } } }) => {
   if (loading) return null;
-  if (!allTeams && !inviteTeams) return (<Redirect to="/create-team" />);
-
+  if ((!allTeams && !inviteTeams) || (allTeams.length === 0 && inviteTeams.length === 0)) return (<Redirect to="/create-team" />);
   const teams = [...allTeams, ...inviteTeams];
   const isTeamIdInteger = parseInt(teamId, 10);
   const teamIdx = isTeamIdInteger ? findIndex(teams, ['id', isTeamIdInteger]) : 0;

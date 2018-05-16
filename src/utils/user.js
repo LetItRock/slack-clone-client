@@ -1,11 +1,24 @@
 import decode from 'jwt-decode';
 
-export default () => {
-  let username = '';
+const getUser = () => {
+  const token = localStorage.getItem('token');
+  const { user } = decode(token);
+  return user;
+}
+
+export const getUsername = () => {
   try {
-    const token = localStorage.getItem('token');
-    const { user } = decode(token);
-    username = user.username;
+    const { username } = getUser();
+    return username;
   } catch (e) {}
-  return username;
+  return '';
+}
+
+export const isOwner = team => {
+  try {
+    const { id } = getUser();
+    return team.owner === id;
+  } catch (e) {
+    return false;
+  }
 }

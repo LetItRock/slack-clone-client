@@ -1,5 +1,5 @@
 import React from 'react';
-import getUsername from '../utils/user';
+import { getUsername, isOwner } from '../utils/user';
 import Channels from '../components/Channels';
 import Teams from '../components/Teams';
 import AddChannelModal from '../components/AddChannelModal';
@@ -29,7 +29,7 @@ class Sidebar extends React.Component {
     const { teams, team } = this.props;
     const { openAddChannelModal, openInvitePeopleModal } = this.state;
     const username = getUsername();
-
+    const isOwnerOfTeam = isOwner(team);
     return [
       <Teams
         key="team-sidebar"
@@ -41,6 +41,7 @@ class Sidebar extends React.Component {
         username={username}
         teamId={team.id}
         channels={team.channels}
+        isOwner={isOwnerOfTeam}
         users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'User1' }]}
         onAddChannelClick={this.toggleAddChannelModal}
         onInvitePeopleClick={this.toggleInvitePeopleModal}
