@@ -2,17 +2,18 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import { Comment } from 'semantic-ui-react';
 import Messages from '../components/Messages';
-import { directMessagesQuery } from '../graphql/directMessage';
+import { directMessagesQuery, newDirectMessageSubscription } from '../graphql/directMessage';
 
 class DirectMessageContainer extends React.Component {
-  /* componentWillMount() {
-    this.unsubscribe = this.subscribe(this.props.channelId);
+  componentWillMount() {
+    const { teamId, userId } = this.props;
+    this.unsubscribe = this.subscribe(teamId, userId);
   }
 
-  componentWillReceiveProps({ channelId }) {
-    if (this.props.channelId !== channelId) {
+  componentWillReceiveProps({ teamId, userId }) {
+    if (this.props.teamId !== teamId || this.props.userId !== userId) {
       if (this.unsubscribe) this.unsubscribe();
-      this.unsubscribe = this.subscribe(channelId);
+      this.unsubscribe = this.subscribe(teamId, userId);
     }
   }
 
@@ -20,20 +21,21 @@ class DirectMessageContainer extends React.Component {
     if (this.unsubscribe) this.unsubscribe();
   }
 
-  subscribe = channelId =>
+  subscribe = (teamId, userId) =>
     this.props.data.subscribeToMore({
-      document: newChannelMessageSubscription,
+      document: newDirectMessageSubscription,
       variables: {
-        channelId: channelId, // gonna be argument to newChannelMessage
+        teamId, // gonna be argument to newChannelMessage
+        userId,
       },
       updateQuery: (prev, { subscriptionData: { data } }) => { // data coming from server subscription
         if (!data) return prev;
         return {
           ...prev,
-          messages: [...prev.messages, data.newChannelMessage],
+          directMessages: [...prev.directMessages, data.newDirectMessage],
         };
       }
-    }); */
+    });
   
   render() {
     const { data: { loading, directMessages } } = this.props;

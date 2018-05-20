@@ -13,6 +13,19 @@ export const directMessagesQuery = gql`
   }
 `;
 
+export const newDirectMessageSubscription = gql`
+  subscription($teamId: Int!, $userId: Int!) {
+    newDirectMessage(teamId: $teamId, userId: $userId) {
+      id
+      text
+      created_at
+      sender {
+        username
+      }
+    }
+  }
+`;
+
 export const createDirectMessageMutation = gql`
   mutation($receiverId: Int!, $text: String!, $teamId: Int!) {
     createDirectMessage(receiverId: $receiverId, text: $text, teamId: $teamId)

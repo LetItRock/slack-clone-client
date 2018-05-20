@@ -16,7 +16,7 @@ const onSubmit = (mutate, receiverId, receiverName, teamId) => async text => awa
   optimisticResponse: {
     createDirectMessage: true,
   },
-  update: (store, { data: { createChannel } }) => {
+  update: (store) => {
     const data = store.readQuery({ query: meQuery });
     const teamIdx = findIndex(data.me.teams, ['id', teamId]);
     // check if we have direct message member already in list
