@@ -14,6 +14,10 @@ const wsLink = new WebSocketLink({
   uri: 'ws://localhost:8081/subscriptions',
   options: {
     reconnect: true,
+    connectionParams: {
+      token: localStorage.getItem('token'), // token will be send on connecting to WS
+      refreshToken: localStorage.getItem('refreshToken'),
+    },
   },
 });
 
@@ -32,16 +36,18 @@ const authLink = setContext((_, { headers }) => {  /* eslint-disable */
 });
 
 const tokenAfterwareLink = new ApolloLink((operation, forward) => {
-  const { headers } = operation.getContext();
-  if (headers) {
-    const token = headers.get('x-token');
-    const refreshToken = headers.get('x-refresh-token');
-    if (token) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('refreshToken', refreshToken);
+  return forward(operation).map((response) => {
+    const { response: { headers } } = operation.getContext();
+    if (headers) {
+      const token = headers.get('x-token');
+      const refreshToken = headers.get('x-refresh-token');
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+      }
     }
-  }
-  return forward(operation);
+    return response;
+  });
 });
 
 const link = split(

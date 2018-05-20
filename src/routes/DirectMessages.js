@@ -11,9 +11,8 @@ import { meQuery } from '../graphql/user';
 import { createMessageMutation } from '../graphql/message';
 
 const teamAndLetterName = team => ({ id: team.id, letter: team.name.charAt(0).toUpperCase() });
-const onSubmit = (mutate, channelId) => async (text) => await mutate({ variables: { text, channelId } });
 
-const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
+const ViewTeam = ({ data: { loading, me }, match: { params: { teamId, userId } } }) => {
   if (loading) return null;
   const { teams, username } = me;
   if (!teams || teams.length === 0) return (<Redirect to="/create-team" />);
@@ -21,18 +20,12 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
   const teamIdx = isTeamIdInteger ? findIndex(teams, ['id', isTeamIdInteger]) : 0;
   const team = teamIdx === -1 ? teams[0] : teams[teamIdx];
 
-  const isChannelIdInteger = parseInt(channelId, 10);
-  const channelIdx = isChannelIdInteger ? findIndex(team.channels, ['id', isChannelIdInteger]) : 0;
-  const channel = channelIdx === -1 ? team.channels[0] : team.channels[channelIdx];
-
   return (
     <AppLayout>
       <Sidebar teams={teams.map(teamAndLetterName)} team={team} username={username} />
-      {channel && <Header channelName={channel.name} />}
-      {channel &&
-        <MessageContainer channelId={channel.id} />
-      }
-      {channel && <SendMessage onSubmit={onSubmit(mutate, channel.id)} placeholder={channel.name} />}
+      {/* <Header channelName={channel.name} />
+      <MessageContainer channelId={channel.id} /> */}
+      <SendMessage onSubmit={() => {}} placeholder={userId} />
     </AppLayout>
   );
 };

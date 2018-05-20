@@ -4,7 +4,7 @@ import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
 import findIndex from 'lodash/findIndex';
-import { allTeamsQuery } from '../graphql/team';
+import { meQuery } from '../graphql/user';
 
 const AddChannelModal = ({
   teamId,
@@ -75,10 +75,10 @@ export default compose(
           const { ok, channel } = createChannel;
           if (!ok) return;
           // read data from the cache
-          const data = store.readQuery({ query: allTeamsQuery });
-          const teamIdx = findIndex(data.allTeams, ['id', teamId]);
-          data.allTeams[teamIdx].channels.push(channel);
-          store.writeQuery({ query: allTeamsQuery, data });
+          const data = store.readQuery({ query: meQuery });
+          const teamIdx = findIndex(data.me.teams, ['id', teamId]);
+          data.me.teams[teamIdx].channels.push(channel);
+          store.writeQuery({ query: meQuery, data });
         },
       });
       onClose();
