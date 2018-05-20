@@ -6,13 +6,17 @@ import Header from '../components/Header';
 import AppLayout from '../components/AppLayout';
 import SendMessage from '../components/SendMessage';
 import Sidebar from '../containers/Sidebar';
-import MessageContainer from '../containers/MessageContainer';
+import DirectMessageContainer from '../containers/DirectMessageContainer';
 import { meQuery } from '../graphql/user';
-import { createMessageMutation } from '../graphql/message';
+import { createDirectMessageMutation } from '../graphql/directMessage';
 
 const teamAndLetterName = team => ({ id: team.id, letter: team.name.charAt(0).toUpperCase() });
+const onSubmit = (mutate, receiverId, teamId) => async text => {
+  const response = await mutate({ variables: { text, receiverId, teamId } });
+  console.log(response);
+};
 
-const ViewTeam = ({ data: { loading, me }, match: { params: { teamId, userId } } }) => {
+const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, userId } } }) => {
   if (loading) return null;
   const { teams, username } = me;
   if (!teams || teams.length === 0) return (<Redirect to="/create-team" />);
@@ -23,14 +27,14 @@ const ViewTeam = ({ data: { loading, me }, match: { params: { teamId, userId } }
   return (
     <AppLayout>
       <Sidebar teams={teams.map(teamAndLetterName)} team={team} username={username} />
-      {/* <Header channelName={channel.name} />
-      <MessageContainer channelId={channel.id} /> */}
-      <SendMessage onSubmit={() => {}} placeholder={userId} />
+      <Header channelName={"channel.name"} />
+      <DirectMessageContainer teamId={team.id} userId={userId} />
+      <SendMessage onSubmit={onSubmit(mutate, userId, team.id)} placeholder={userId} />
     </AppLayout>
   );
 };
 
 export default compose(
   graphql(meQuery, { options: { fetchPolicy: 'network-only' } }),
-  graphql(createMessageMutation),
+  graphql(createDirectMessageMutation),
 )(ViewTeam);
