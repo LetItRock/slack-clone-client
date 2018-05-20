@@ -52,7 +52,17 @@ const user = ({ id, name }) => (
   </SideBarListItem>
 );
 
-export default ({ teamId, teamName, username, channels, isOwner, users, onAddChannelClick, onInvitePeopleClick }) => (
+export default ({
+  teamId,
+  teamName,
+  username,
+  channels,
+  isOwner,
+  users,
+  onAddChannelClick,
+  onInvitePeopleClick,
+  onDirectMessageClick,
+}) => (
   <ChannelWrapper>
     <PushLeft>
       <TeamNameHeader>{teamName}</TeamNameHeader>
@@ -68,7 +78,10 @@ export default ({ teamId, teamName, username, channels, isOwner, users, onAddCha
     </div>
     <div>
       <SideBarList>
-        <SideBarListHeader>Direct Messages</SideBarListHeader>
+        <SideBarListHeader>
+          Direct Messages
+          <Icon name="add circle" onClick={onDirectMessageClick} style={{ cursor: 'pointer' }} />
+        </SideBarListHeader>
         {users.map(user)}
       </SideBarList>
     </div>
