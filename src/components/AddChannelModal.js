@@ -6,6 +6,11 @@ import { compose, graphql } from 'react-apollo';
 import findIndex from 'lodash/findIndex';
 import { meQuery } from '../graphql/user';
 
+const handleOnClose = (onClose, resetForm) => e => {
+  resetForm();
+  onClose(e);
+};
+
 const AddChannelModal = ({
   teamId,
   open,
@@ -15,8 +20,9 @@ const AddChannelModal = ({
   handleChange,
   handleBlur,
   isSubmitting,
+  resetForm,
 }) => (
-  <Modal open={open} onClose={onClose} className="scrolling">
+  <Modal open={open} onClose={handleOnClose(onClose, resetForm)} className="scrolling">
     <Modal.Header>Add Channel</Modal.Header>
     <Modal.Content>
       <Modal.Description>
@@ -32,7 +38,7 @@ const AddChannelModal = ({
             />
           </Form.Field>
           <Form.Group width="equal">
-            <Button disabled={isSubmitting} onClick={onClose} fluid>Cancel</Button>
+            <Button disabled={isSubmitting} onClick={handleOnClose(onClose, resetForm)} fluid>Cancel</Button>
             <Button disabled={isSubmitting} onClick={handleSubmit} fluid>Create channel</Button>
           </Form.Group>
         </Form>
