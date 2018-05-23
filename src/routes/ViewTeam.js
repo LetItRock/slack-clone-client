@@ -32,7 +32,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
       {channel &&
         <MessageContainer channelId={channel.id} />
       }
-      {channel && <SendMessage onSubmit={onSubmit(mutate, channel.id)} placeholder={channel.name} />}
+      {channel && <SendMessage onSubmit={onSubmit(mutate, channel.id)} placeholder={channel.name} channelId={channel.id}/>}
     </AppLayout>
   );
 };

@@ -5,3 +5,9 @@ export const createMessageMutation = gql`
     createMessage(channelId: $channelId, text: $text)
   }
 `;
+
+export const createFileMessageMutation = gql`
+  mutation($channelId: Int!, $file: File) {
+    createMessage(channelId: $channelId, file: $file)
+  }
+`;
