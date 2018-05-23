@@ -1,22 +1,40 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import { Comment } from 'semantic-ui-react';
-import Messages from '../components/Messages';
 import FileUpload from '../components/FileUpload';
+import RenderText from '../components/RenderText';
+import { messagesQuery, newChannelMessageSubscription } from '../graphql/message';
 
-const newChannelMessageSubscription = gql`
-  subscription($channelId: Int!) {
-    newChannelMessage(channelId: $channelId) {
-      id
-      text
-      created_at
-      user {
-        username
-      }
-    }
+const containerStyles = {
+  gridColumn: 3,
+  gridRow: 2,
+  paddingLeft: '20px',
+  paddingRight: '20px',
+  display: 'flex',
+  flexDirection: 'column-reverse',
+  overflowY: 'auto',
+};
+
+const imageStyle = {
+  width: '300px',
+  height: '200px',
+  display: 'block',
+  margin: '10px 0',
+};
+
+const audioStyle = {
+  display: 'block',
+  margin: '10px 0',
+};
+
+const Message = ({ message: { url, filetype, text } }) => {
+  if (url) {
+    if (filetype.startsWith('image/')) return <img src={url} style={imageStyle} alt="" />;
+    if (filetype.startsWith('text/')) return <RenderText url={url} />;
+    if (filetype.startsWith('audio/')) return <audio style={audioStyle} controls><source src={url} type={filetype} /></audio>;
   }
-`;
+  return <Comment.Text>{text}</Comment.Text>;
+}
 class MessageContainer extends React.Component {
   componentWillMount() {
     this.unsubscribe = this.subscribe(this.props.channelId);
@@ -53,48 +71,31 @@ class MessageContainer extends React.Component {
     if (loading) return null;
 
     return (
-      <Messages>
-        <FileUpload disableClick channelId={channelId}>
-          <Comment.Group>
-            {messages.map(message => (
-              <Comment key={`${message.id}-message`}>
-                <Comment.Content>
-                  <Comment.Author as="a">
-                    {message.user.username}
-                  </Comment.Author>
-                  <Comment.Metadata>
-                    {message.created_at}
-                  </Comment.Metadata>
-                  <Comment.Text>
-                    {message.text}
-                  </Comment.Text>
-                  <Comment.Actions>
-                    <Comment.Action>
-                      Reply
-                    </Comment.Action>
-                  </Comment.Actions>
-                </Comment.Content>
-              </Comment>
-            ))}
-          </Comment.Group>
-        </FileUpload>
-      </Messages>
+      <FileUpload style={containerStyles} disableClick channelId={channelId}>
+        <Comment.Group>
+          {messages.map(message => (
+            <Comment key={`${message.id}-message`}>
+              <Comment.Content>
+                <Comment.Author as="a">
+                  {message.user.username}
+                </Comment.Author>
+                <Comment.Metadata>
+                  {message.created_at}
+                </Comment.Metadata>
+                <Message message={message} />
+                <Comment.Actions>
+                  <Comment.Action>
+                    Reply
+                  </Comment.Action>
+                </Comment.Actions>
+              </Comment.Content>
+            </Comment>
+          ))}
+        </Comment.Group>
+      </FileUpload>
     );
   }
 }
-
-const messagesQuery = gql`
-  query($channelId: Int!) {
-    messages(channelId: $channelId) {
-      id
-      text
-      created_at
-      user {
-        username
-      }
-    }
-  }
-`;
 
 export default graphql(messagesQuery, {
   options: (props) => ({ // is called with props change

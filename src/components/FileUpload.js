@@ -13,8 +13,8 @@ const onDrop = (channelId, mutate) => async ([file]) => {
   console.log(response);
 };
 
-const FileUpload = ({ children, disableClick, mutate, channelId }) => (
-  <DropZone onDrop={onDrop(channelId, mutate)} className="ignore" disableClick={disableClick}>
+const FileUpload = ({ children, disableClick, mutate, channelId, style = {} }) => (
+  <DropZone style={style} onDrop={onDrop(channelId, mutate)} className="ignore" disableClick={disableClick}>
     {children}
   </DropZone>
 );
