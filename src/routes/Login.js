@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { Form, Message, Button, Input, Container, Header } from 'semantic-ui-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { wsLink } from '../apollo';
 
 class Login extends React.Component {
   constructor(props) {
@@ -32,6 +33,7 @@ class Login extends React.Component {
     if (ok) {
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
+      wsLink.subscriptionClient.tryReconnect();
       this.props.history.push("/view-team");
     } else {
       const err = errors.reduce((acc, { path, message }) => {

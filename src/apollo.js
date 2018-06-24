@@ -10,10 +10,11 @@ const httpLink = createFileLink({
   uri: 'http://localhost:8081/graphql',
 });
 
-const wsLink = new WebSocketLink({
+export const wsLink = new WebSocketLink({
   uri: 'ws://localhost:8081/subscriptions',
   options: {
     reconnect: true,
+    lazy: true,
     connectionParams: {
       token: localStorage.getItem('token'), // token will be send on connecting to WS
       refreshToken: localStorage.getItem('refreshToken'),
