@@ -14,8 +14,8 @@ const teamAndLetterName = team => ({ id: team.id, letter: team.name.charAt(0).to
 const onSubmit = (mutate, channelId) => async (text) => await mutate({ variables: { text, channelId } });
 
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
-  if (loading) return null;
-  const { teams, username } = me;
+  if (loading || !me) return null;
+  const { id, teams, username } = me;
   if (!teams || teams.length === 0) return (<Redirect to="/create-team" />);
   const isTeamIdInteger = parseInt(teamId, 10);
   const teamIdx = isTeamIdInteger ? findIndex(teams, ['id', isTeamIdInteger]) : 0;
@@ -27,7 +27,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
 
   return (
     <AppLayout>
-      <Sidebar teams={teams.map(teamAndLetterName)} team={team} username={username} />
+      <Sidebar teams={teams.map(teamAndLetterName)} team={team} username={username} currentUserId={id} />
       {channel && <Header channelName={channel.name} />}
       {channel &&
         <MessageContainer channelId={channel.id} />

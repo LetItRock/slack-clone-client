@@ -25,6 +25,7 @@ const AddChannelModal = ({
   isSubmitting,
   resetForm,
   setFieldValue,
+  currentUserId,
 }) => (
   <Modal open={open} onClose={handleOnClose(onClose, resetForm)} className="scrolling">
     <Modal.Header>Add Channel</Modal.Header>
@@ -42,7 +43,7 @@ const AddChannelModal = ({
             />
           </Form.Field>
           <Form.Field>
-            <Checkbox value={!values.public} onChange={handleCheckboxChange(setFieldValue)} label="Private" toggle />
+            <Checkbox checked={!values.public} onChange={handleCheckboxChange(setFieldValue)} label="Private" toggle />
           </Form.Field>
           {values.public ? null : (
             <Form.Field>
@@ -51,6 +52,7 @@ const AddChannelModal = ({
                 value={values.members}
                 handleChange={(e, { value }) => setFieldValue('members', value)}
                 placeholder="Select members to invite"
+                currentUserId={currentUserId}
               />
             </Form.Field>
           )}
