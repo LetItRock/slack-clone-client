@@ -9,3 +9,16 @@ export const getOrCreateDmChannelMutation = gql`
     }
   }
 `;
+
+export const createChannelMutation = gql`
+  mutation($teamId: Int!, $name: String!, $public: Boolean, $members: [Int!]) {
+    createChannel(teamId: $teamId, name: $name, public: $public, members: $members) {
+      ok
+      channel {
+        id
+        name
+        dm
+      }
+    }
+  }
+`;

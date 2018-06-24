@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { Comment } from 'semantic-ui-react';
+import { Comment, Button } from 'semantic-ui-react';
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
 import { messagesQuery, newChannelMessageSubscription } from '../graphql/message';
@@ -36,6 +36,10 @@ const Message = ({ message: { url, filetype, text } }) => {
   return <Comment.Text>{text}</Comment.Text>;
 }
 class MessageContainer extends React.Component {
+  state = {
+    hasMoreItems: true,
+  };
+
   componentWillMount() {
     this.unsubscribe = this.subscribe(this.props.channelId);
   }
@@ -65,6 +69,24 @@ class MessageContainer extends React.Component {
         };
       }
     });
+
+  handleFetchMore = () => {
+    this.props.data.fetchMore({
+      variables: {
+        channelId: this.props.channelId,
+        offset: this.props.data.messages.length,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return previousResult;
+        if (fetchMoreResult.messages.length < 35) this.setState({ hasMoreItems: false });
+
+        return {
+          ...previousResult,
+          messages: [...previousResult.messages, ...fetchMoreResult.messages],
+        };
+      },
+    });
+  };
   
   render() {
     const { data: { loading, messages }, channelId } = this.props;
@@ -73,6 +95,7 @@ class MessageContainer extends React.Component {
     return (
       <FileUpload style={containerStyles} disableClick channelId={channelId}>
         <Comment.Group>
+          {this.state.hasMoreItems && <Button onClick={this.handleFetchMore}>Load more...</Button>}
           {messages.map(message => (
             <Comment key={`${message.id}-message`}>
               <Comment.Content>
@@ -101,6 +124,7 @@ export default graphql(messagesQuery, {
   options: (props) => ({ // is called with props change
     variables: {
       channelId: props.channelId,
+      offset: 0,
     },
     fetchPolicy: 'network-only', // fetch messages always
   }),

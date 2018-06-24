@@ -58,7 +58,7 @@ export default compose(
   withFormik({
     mapPropsToValues: props => ({ members: [] }),
     handleSubmit: async ({ members} , { props: { history, onClose, teamId, mutate }, resetForm }) => {
-      const response = await mutate({
+      await mutate({
         variables: { teamId, members },
         update: (store, { data: { getOrCreateDmChannel } }) => {
           const { id, name, dm } = getOrCreateDmChannel;

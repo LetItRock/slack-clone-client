@@ -1,10 +1,10 @@
 import React from 'react';
 import { Form, Button, Modal, Input, Checkbox } from 'semantic-ui-react';
 import { withFormik } from 'formik';
-import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
 import findIndex from 'lodash/findIndex';
 import { meQuery } from '../graphql/user';
+import { createChannelMutation } from '../graphql/channel';
 import MultiSelectUsers from './MultiSelectUsers';
 
 const handleOnClose = (onClose, resetForm) => e => {
@@ -66,18 +66,6 @@ const AddChannelModal = ({
   </Modal>
 );
 
-const createChannelMutation = gql`
-  mutation($teamId: Int!, $name: String!, $public: Boolean, $members: [Int!]) {
-    createChannel(teamId: $teamId, name: $name, public: $public, members: $members) {
-      ok
-      channel {
-        id
-        name
-      }
-    }
-  }
-`;
-
 export default compose(
   graphql(createChannelMutation),
   withFormik({
@@ -93,6 +81,7 @@ export default compose(
               __typename: 'Channel',
               id: -1,
               name: values.name,
+              dm: false,
             }
           },
         },
