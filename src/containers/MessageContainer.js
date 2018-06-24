@@ -65,16 +65,17 @@ class MessageContainer extends React.Component {
         if (!data) return prev;
         return {
           ...prev,
-          messages: [...prev.messages, data.newChannelMessage],
+          messages: [data.newChannelMessage, ...prev.messages],
         };
       }
     });
 
   handleFetchMore = () => {
+    const { messages } = this.props.data;
     this.props.data.fetchMore({
       variables: {
         channelId: this.props.channelId,
-        offset: this.props.data.messages.length,
+        cursor: messages[messages.length - 1].created_at,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         if (!fetchMoreResult) return previousResult;
@@ -95,8 +96,8 @@ class MessageContainer extends React.Component {
     return (
       <FileUpload style={containerStyles} disableClick channelId={channelId}>
         <Comment.Group>
-          {this.state.hasMoreItems && <Button onClick={this.handleFetchMore}>Load more...</Button>}
-          {messages.map(message => (
+          {this.state.hasMoreItems && messages.length >= 35 && <Button onClick={this.handleFetchMore}>Load more...</Button>}
+          {messages.slice().reverse().map(message => (
             <Comment key={`${message.id}-message`}>
               <Comment.Content>
                 <Comment.Author as="a">
@@ -124,7 +125,6 @@ export default graphql(messagesQuery, {
   options: (props) => ({ // is called with props change
     variables: {
       channelId: props.channelId,
-      offset: 0,
     },
     fetchPolicy: 'network-only', // fetch messages always
   }),

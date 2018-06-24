@@ -7,7 +7,8 @@ const isAuthenticated = () => {
   const refreshToken = localStorage.getItem('refreshToken');
   try {
     decode(token);
-    decode(refreshToken);
+    const { exp } = decode(refreshToken);
+    if (Date.now() / 1000 > exp) return false; // passed expired time
     return true;
   } catch (e) {
     return false;
